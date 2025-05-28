@@ -19,7 +19,7 @@
 	RootModule			   = 'SleepManager.psm1'
 	
 	# Version number of this module.
-	ModuleVersion		   = '1.0.0.0'
+	ModuleVersion		   = '1.0.0'
 	
 	# ID used to uniquely identify this module
 	GUID				   = 'c8218ab2-673a-4544-a2f6-a96747e3b734'
@@ -34,7 +34,7 @@
 	Copyright			   = '(c) 2025. All rights reserved.'
 	
 	# Description of the functionality provided by this module
-	Description		       = 'PowerShell module for managing computer sleep and display power states using Windows API. Provides functions to disable/enable sleep mode and execute code blocks with sleep prevention.'
+	Description		       = 'PowerShell module for managing computer sleep and display power states using Windows API. Provides functions to disable/enable sleep mode and execute code blocks with sleep prevention. Includes comprehensive logging via RunLog module.'
 	
 	# Supported PSEditions
 	# CompatiblePSEditions = @('Core', 'Desktop')
@@ -59,7 +59,12 @@
 	
 	# Modules that must be imported into the global environment prior to importing
 	# this module
-	RequiredModules	       = @()
+	RequiredModules	       = @(
+		@{
+			ModuleName    = 'RunLog'
+			ModuleVersion = '2.0.0'
+		}
+	)
 	
 	# Assemblies that must be loaded prior to importing this module
 	RequiredAssemblies	   = @()
@@ -101,7 +106,11 @@
 	ModuleList			   = @()
 	
 	# List of all files packaged with this module
-	FileList			   = @()
+	FileList			   = @(
+		'SleepManager.psd1',
+		'SleepManager.psm1',
+		'README.md'
+	)
 	
 	# Private data to pass to the module specified in ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 	PrivateData		       = @{
@@ -110,7 +119,7 @@
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags		 = @('Sleep', 'Power', 'Windows', 'API', 'System', 'Display', 'PowerManagement')
+			Tags		 = @('Sleep', 'Power', 'Windows', 'API', 'System', 'Display', 'PowerManagement', 'Logging')
 			
 			# A URL to the license for this module.
 			# LicenseUri = ''
