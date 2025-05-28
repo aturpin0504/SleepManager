@@ -122,10 +122,10 @@
 			Tags		 = @('Sleep', 'Power', 'Windows', 'API', 'System', 'Display', 'PowerManagement', 'Logging')
 			
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://github.com/aturpin0504/SleepManager?tab=MIT-1-ov-file'
 			
 			# A URL to the main website for this project.
-			# ProjectUri = ''
+			ProjectUri = 'https://github.com/aturpin0504/SleepManager'
 			
 			# A URL to an icon representing this module.
 			# IconUri = ''
