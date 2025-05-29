@@ -19,7 +19,7 @@
 	RootModule			   = 'SleepManager.psm1'
 	
 	# Version number of this module.
-	ModuleVersion		   = '1.0.0'
+	ModuleVersion		   = '1.1.0'
 	
 	# ID used to uniquely identify this module
 	GUID				   = 'c8218ab2-673a-4544-a2f6-a96747e3b734'
@@ -34,7 +34,7 @@
 	Copyright			   = '(c) 2025. All rights reserved.'
 	
 	# Description of the functionality provided by this module
-	Description		       = 'PowerShell module for managing computer sleep and display power states using Windows API. Provides functions to disable/enable sleep mode and execute code blocks with sleep prevention. Includes comprehensive logging via RunLog module.'
+	Description		       = 'PowerShell module for managing computer sleep and display power states using Windows API. Provides functions to disable/enable sleep mode and execute code blocks with sleep prevention. Includes comprehensive logging via RunLog module with support for custom logger instances.'
 	
 	# Supported PSEditions
 	# CompatiblePSEditions = @('Core', 'Desktop')
@@ -85,6 +85,9 @@
 	
 	# Functions to export from this module
 	FunctionsToExport	   = @(
+		'Initialize-DefaultLogger',
+		'Set-SleepManagerLogger',
+		'Get-SleepManagerLogger',
 		'Disable-ComputerSleep',
 		'Enable-ComputerSleep',
 		'Invoke-WithoutSleep'
@@ -122,16 +125,16 @@
 			Tags		 = @('Sleep', 'Power', 'Windows', 'API', 'System', 'Display', 'PowerManagement', 'Logging')
 			
 			# A URL to the license for this module.
-			LicenseUri = 'https://github.com/aturpin0504/SleepManager?tab=MIT-1-ov-file'
+			# LicenseUri = ''
 			
 			# A URL to the main website for this project.
-			ProjectUri = 'https://github.com/aturpin0504/SleepManager'
+			# ProjectUri = ''
 			
 			# A URL to an icon representing this module.
 			# IconUri = ''
 			
 			# ReleaseNotes of this module
-			ReleaseNotes = 'Initial release - Provides functions to disable/enable computer sleep mode and execute code blocks with sleep prevention using Windows API.'
+			ReleaseNotes = 'Version 1.1.0 - Added support for custom RunLogger instances via Set-SleepManagerLogger and Get-SleepManagerLogger functions. Users can now provide their own logger configuration or integrate with existing logging infrastructure.'
 			
 		} # End of PSData hashtable
 		

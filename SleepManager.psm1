@@ -13,8 +13,98 @@
 # Import required modules
 Import-Module RunLog -Force
 
-# Initialize module logger
-$script:Logger = New-RunLogger -LogFilePath "$env:TEMP\SleepManager.log" -MinimumLogLevel Information
+# Module-level logger variable
+$script:Logger = $null
+$script:LoggerIsOwned = $false
+
+# Initialize module logger (default behavior if no logger is provided)
+function Initialize-DefaultLogger
+{
+	if (-not $script:Logger)
+	{
+		$script:Logger = New-RunLogger -LogFilePath "$env:TEMP\SleepManager.log" -MinimumLogLevel Information
+		$script:LoggerIsOwned = $true
+	}
+}
+
+# Function to set an external logger
+function Set-SleepManagerLogger
+{
+    <#
+    .SYNOPSIS
+        Sets a custom RunLogger instance for the SleepManager module.
+    
+    .DESCRIPTION
+        Allows you to provide your own RunLogger instance for the SleepManager module
+        to use instead of creating its own default logger. This enables integration
+        with existing logging infrastructure and custom log configurations.
+    
+    .PARAMETER Logger
+        An existing RunLogger instance to use for logging.
+    
+    .EXAMPLE
+        # Create your own logger with custom settings
+        $myLogger = New-RunLogger -LogFilePath "C:\Logs\MyApp.log" -MinimumLogLevel Debug
+        Set-SleepManagerLogger -Logger $myLogger
+        
+        # Now all SleepManager operations will use your logger
+        Disable-ComputerSleep
+    
+    .EXAMPLE
+        # Use the same logger across multiple modules
+        $sharedLogger = New-RunLogger -LogFilePath "C:\Logs\SharedApp.log"
+        Set-SleepManagerLogger -Logger $sharedLogger
+        # Other modules could also use $sharedLogger for unified logging
+    #>
+	
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $true)]
+		[ValidateNotNull()]
+		$Logger
+	)
+	
+	# Validate that the provided object is actually a RunLogger instance
+	if ($Logger.GetType().Name -ne 'RunLogger')
+	{
+		throw "Logger parameter must be a RunLogger instance. Use New-RunLogger to create one."
+	}
+	
+	$script:Logger = $Logger
+	$script:LoggerIsOwned = $false
+	
+	$script:Logger.Information("External logger configured for SleepManager module")
+}
+
+# Function to get the current logger (useful for debugging or sharing)
+function Get-SleepManagerLogger
+{
+    <#
+    .SYNOPSIS
+        Gets the current RunLogger instance used by SleepManager.
+    
+    .DESCRIPTION
+        Returns the RunLogger instance currently being used by the SleepManager module.
+        This can be useful for debugging or for sharing the same logger with other components.
+    
+    .EXAMPLE
+        $currentLogger = Get-SleepManagerLogger
+        $currentLogger.Information("This message will appear in the SleepManager log")
+    #>
+	
+	[CmdletBinding()]
+	param ()
+	
+	if (-not $script:Logger)
+	{
+		Initialize-DefaultLogger
+	}
+	
+	return $script:Logger
+}
+
+# Initialize default logger if none is set
+Initialize-DefaultLogger
 
 # Define the Windows API type for sleep control
 Add-Type -TypeDefinition @"
@@ -60,6 +150,12 @@ function Disable-ComputerSleep
 	param (
 		[switch]$KeepDisplayOn
 	)
+	
+	# Ensure logger is initialized
+	if (-not $script:Logger)
+	{
+		Initialize-DefaultLogger
+	}
 	
 	$script:Logger.Information("Attempting to disable computer sleep. KeepDisplayOn: $KeepDisplayOn")
 	
@@ -111,6 +207,12 @@ function Enable-ComputerSleep
 	
 	[CmdletBinding()]
 	param ()
+	
+	# Ensure logger is initialized
+	if (-not $script:Logger)
+	{
+		Initialize-DefaultLogger
+	}
 	
 	$script:Logger.Information("Attempting to re-enable computer sleep")
 	
@@ -214,6 +316,12 @@ function Invoke-WithoutSleep
 		[switch]$KeepDisplayOn
 	)
 	
+	# Ensure logger is initialized
+	if (-not $script:Logger)
+	{
+		Initialize-DefaultLogger
+	}
+	
 	$script:Logger.Information("Starting Invoke-WithoutSleep execution. KeepDisplayOn: $KeepDisplayOn")
 	
 	try
@@ -268,4 +376,4 @@ $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
 }
 
 # Export functions
-Export-ModuleMember -Function Disable-ComputerSleep, Enable-ComputerSleep, Invoke-WithoutSleep
+Export-ModuleMember -Function Disable-ComputerSleep, Enable-ComputerSleep, Invoke-WithoutSleep, Set-SleepManagerLogger, Get-SleepManagerLogger
