@@ -24,6 +24,19 @@ SleepManager allows you to programmatically control Windows sleep behavior from 
 
 ### Installation
 
+**From PowerShell Gallery (Recommended):**
+```powershell
+# Install for current user
+Install-Module -Name SleepManager -Scope CurrentUser
+
+# Install for all users (requires admin)
+Install-Module -Name SleepManager -Scope AllUsers
+
+# Import the module
+Import-Module SleepManager
+```
+
+**Manual Installation:**
 1. **Download the module files** to a folder named `SleepManager`
 2. **Ensure RunLog module is available** (required dependency)
 3. **Copy to PowerShell modules directory:**
@@ -39,6 +52,8 @@ SleepManager allows you to programmatically control Windows sleep behavior from 
    ```powershell
    Import-Module SleepManager
    ```
+
+**Note:** Installing from PowerShell Gallery automatically handles the RunLog module dependency.
 
 ### Quick Start Examples
 
